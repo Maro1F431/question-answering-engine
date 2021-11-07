@@ -14,6 +14,6 @@ def corpus_embedding(corpus, model):
 
 def indexing(model, embedded_corpus, query):
     embedded_query = model.encode(query)
-    ranked_documents = sorted(tq.tqdm(embedded_corpus), key=lambda x : util.pytorch_cos_sim(embedded_query, x['text_embedding']))
+    ranked_documents = sorted(tq.tqdm(embedded_corpus), reverse=True, key=lambda x : util.pytorch_cos_sim(embedded_query, x['text_embedding']))
     return ranked_documents
 
