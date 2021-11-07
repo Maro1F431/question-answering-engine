@@ -14,7 +14,7 @@ def build_corpus():
     dataset = "dbpedia-entity"
     url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
     data_path = util.download_and_unzip(url, "datasets")
-    corpus_db, queries, qrels = GenericDataLoader(data_folder=data_path).load(split="test")
+    corpus_db, db_queries, db_qrels = GenericDataLoader(data_folder=data_path).load(split="test")
 
     sample_corpus_db = []
     for k,e in corpus_db.items():
@@ -24,7 +24,8 @@ def build_corpus():
             sample_corpus_db.append({'dataset':'dbpedia', 'text':e['text'], 'key':k})
     
     corpus = corpus_squad + sample_corpus_db
-    return corpus
+    # squad_val, db_queries and db_qrels are used to evaluate the indexing with mrr.
+    return corpus, squad_val, db_queries, db_qrels
     
 if __name__ == "__main__":
     import json
