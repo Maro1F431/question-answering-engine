@@ -5,7 +5,7 @@ def compute_mrr_dbpedia(query_keys, list_retrived_documents, qrels):
         j=0
         # dbpedia as 3 level of relevancy, 0 for none, 1 for medium and 2 for high.
         # We made the choice to only consider high relevancy for the MRR.
-        while(qrles[query_key][retrived_documents[j]['key']] < 2):
+        while(qrels[query_key][retrived_documents[j]['key']] < 2):
             if retrived_documents[j]['dataset'] != 'dbpedia':
                 next
             j += 1
