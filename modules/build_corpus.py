@@ -24,7 +24,7 @@ def build_corpus():
             sample_corpus_db.append({'dataset':'dbpedia', 'text':e['text'], 'key':k})
     
     corpus = corpus_squad + sample_corpus_db
-    # squad_val, db_queries and db_qrels are used to evaluate the indexing with mrr.
+    # squad_val is used to evaluate the indexing with mrr.
     return corpus, squad_val
     
 if __name__ == "__main__":
