@@ -1,5 +1,4 @@
 import torch
-from sentence_transformers import SentenceTransformer, util
 import tqdm as tq
 
 def corpus_embedding(corpus, model):
