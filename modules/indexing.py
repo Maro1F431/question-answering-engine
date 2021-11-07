@@ -4,7 +4,7 @@ import tqdm as tq
 def corpus_embedding(corpus, model):
     # Enables GPU if avalaible for embedding. It is strongly adviced to run this on a GPU
     # since the computation on a CPU can take up to an hour on a 10k dataset.
-    device = 'cuda:' + str(torch.cuda.current_device) if torch.cuda.is_available else None
+    device = 'cuda:0' if torch.cuda.is_available() else None
     text_only_corpus = [elm['text'] for elm in corpus]
     text_embedded_corpus = model.encode(text_only_corpus,device=device, show_progress_bar=True)
     embedded_corpus = corpus
