@@ -21,7 +21,7 @@ def build_corpus():
         if len(sample_corpus_db) > 9000:
             break
         if len(word_tokenize(e['text'])) > 50:
-            sample_corpus_db.append({'dataset':'dbpedia', 'text':e['text'], 'key':k})
+            sample_corpus_db.append({'dataset':'dbpedia', 'text':e['text']})
     
     corpus = corpus_squad + sample_corpus_db
     # squad_val is used to evaluate the indexing with mrr.
