@@ -60,7 +60,7 @@ def batch_indexing(indexing_model, embedded_corpus, queries, comparison_metric='
 
 def get_annoy_index(n_trees, embedded_corpus, embedding_size, indexing_model_name, comparison_metric='dot'):
     '''
-    Builds the annoy index of our corpus.
+    Builds the annoy index of our corpus. It is highly recommended to use a GPU for this.
 
             Parameters:
                     n_trees (int): Number of trees used by the annoy algorithm.
