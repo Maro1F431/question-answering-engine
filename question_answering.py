@@ -8,13 +8,13 @@ from transformers import AutoTokenizer, AutoModelForQuestionAnswering, pipeline
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
+    query = input("Please enter a question: ")
+    corpus, squad_valid, _ = build_corpus()
+    indexing_model_name = 'sentence-transformers/msmarco-distilbert-dot-v5'
+    indexing_model = SentenceTransformer(indexing_model_name)
+    embedded_corpus = corpus_embedding(corpus, indexing_model)
 
     while True:
-        query = input("Please enter a question: ")
-        corpus, squad_valid, _ = build_corpus()
-        indexing_model_name = 'sentence-transformers/msmarco-distilbert-dot-v5'
-        indexing_model = SentenceTransformer(indexing_model_name)
-        embedded_corpus = corpus_embedding(corpus, indexing_model)
         ranked_corpus_ids = indexing(indexing_model, embedded_corpus, query)
 
         qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
