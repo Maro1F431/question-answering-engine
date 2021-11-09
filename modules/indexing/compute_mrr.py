@@ -1,8 +1,8 @@
 from indexing import indexing
 
-def compute_mrr_squad(embedded_corpus, comparison_metric, indexing_model, squad_validation_dataset, nb_queries):
+def compute_mrr_squad(embedded_corpus, torch_comparison_metric, indexing_model, squad_validation_dataset, nb_queries):
     queries = squad_validation_dataset['question'][:nb_queries]
-    list_ranked_documents_indexes = [indexing(indexing_model, embedded_corpus, query, comparison_metric) for query in queries]
+    list_ranked_documents_indexes = [indexing(indexing_model, embedded_corpus, query, torch_comparison_metric) for query in queries]
     sum_reci_rank = 0
     for i,query in enumerate(queries):
         query_index = squad_validation_dataset['question'].index(query)
