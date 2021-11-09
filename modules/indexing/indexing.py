@@ -64,7 +64,7 @@ def get_annoy_index(n_trees, embedded_corpus, embedding_size, model_name, compar
 
 def annoy_indexing(annoy_index, query, indexing_model, top_k_hits):
     query_embedding = indexing_model.encode(query)
-    ranked_corpus_ids, scores = annoy_index.get_nns_by_vector(query_embedding, top_k_hits, include_distances=True)
+    ranked_corpus_ids, _ = annoy_index.get_nns_by_vector(query_embedding, top_k_hits, include_distances=True)
     return ranked_corpus_ids
     
 
