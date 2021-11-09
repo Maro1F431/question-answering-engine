@@ -1,16 +1,12 @@
-from indexing import indexing
+from indexing import batch_indexing
 
-def compute_mrr_squad(embedded_corpus, torch_comparison_metric, indexing_model, squad_validation_dataset, nb_queries):
-    queries = squad_validation_dataset['question'][:nb_queries]
-    list_ranked_documents_indexes = [indexing(indexing_model, embedded_corpus, query, torch_comparison_metric) for query in queries]
+def compute_mrr_squad(embedded_corpus, map_question_context, torch_comparison_metric, indexing_model, squad_validation_dataset):
+    queries = squad_validation_dataset['question']
+    list_ranked_documents_indexes = batch_indexing(indexing_model, embedded_corpus, queries, torch_comparison_metric)
     sum_reci_rank = 0
-    for i,query in enumerate(queries):
-        query_index = squad_validation_dataset['question'].index(query)
-        relevant_doc = squad_validation_dataset['context'][query_index]
+    for i in range(len(queries)):
         ranked_documents_indexes = list_ranked_documents_indexes[i]
-        j = 0
-        while(embedded_corpus[ranked_documents_indexes[j]]['dataset'] != 'squad_v2' or embedded_corpus[ranked_documents_indexes[j]]['text'] != relevant_doc):
-            j += 1
-        sum_reci_rank += 1/(j+1)
+        rank = ranked_documents_indexes.index(map_question_context[i]) + 1
+        sum_reci_rank += 1/rank
     mrr = sum_reci_rank/len(queries)
     return mrr
