@@ -60,6 +60,7 @@ def get_annoy_index(n_trees, embedded_corpus, embedding_size, model_name, compar
         #Load Annoy Index from disc
         annoy_index = AnnoyIndex(embedding_size, comparison_metric)
         annoy_index.load(annoy_index_path)
+    return annoy_index
 
 def annoy_indexing(annoy_index, query, indexing_model, top_k_hits):
     query_embedding = indexing_model.encode(query)
