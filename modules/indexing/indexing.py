@@ -14,15 +14,24 @@ def corpus_embedding(corpus, model):
         elm['text_embedding'] = text_embedded_corpus[i]
     return embedded_corpus
 
-def indexing(model, embedded_corpus, query, torch_comparison_metric):
+def indexing(model, embedded_corpus, query, comparison_metric):
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     embedded_query = model.encode(query)
     corpus_embeddings = [doc['text_embedding'] for doc in embedded_corpus]
-    tensor_embedded_query = torch.FloatTensor([embedded_query])
-    tensor_corpus_embeddings = torch.FloatTensor(corpus_embeddings)
-    similarity_tensor = torch_comparison_metric(tensor_embedded_query, tensor_corpus_embeddings.t())
-    similarity_list = similarity_tensor.tolist()[0]
+    similarity_list = list(map(lambda x : comparison_metric(embedded_query, x), corpus_embeddings))
     ranked_corpus_ids = np.argsort(similarity_list)[::-1]
     return ranked_corpus_ids
+
+def batch_indexing(model, embedded_corpus, queries, torch_comparison_metric):
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    print('Embedding queries:')
+    embedded_queries = model.encode(queries,device=device, show_progress_bar=True)
+    corpus_embeddings = [doc['text_embedding'] for doc in embedded_corpus]
+    tensor_embedded_query = torch.FloatTensor(embedded_queries).to(device)
+    tensor_corpus_embeddings = torch.FloatTensor(corpus_embeddings).to(device)
+    similarity_tensor = torch_comparison_metric(tensor_embedded_query, tensor_corpus_embeddings.t())
+    _, tensor_ranked_corpus_ids = torch.sort(similarity_tensor, descending=True, dim=1)
+    return tensor_ranked_corpus_ids.tolist()
 
 def get_annoy_index(n_trees, embedded_corpus, embedding_size, model_name, comparison_metric='dot'):
     annoy_index_path = '{}-embdsize{}-annoy_index-{}-trees.ann'.format(model_name.replace('/', '_'), embedding_size, n_trees)
