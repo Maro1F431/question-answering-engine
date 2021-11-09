@@ -1,6 +1,6 @@
 from datasets import load_dataset, load_metric
 from transformers import AutoTokenizer, Trainer, AutoModelForQuestionAnswering
-from modules.question_answering.model_evaluation import get_processed_predictions, compute_metrics
+from question_answering.model_evaluation import get_processed_predictions, compute_metrics
 
 def eval_model(model_checkpoint):
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
