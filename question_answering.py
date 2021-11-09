@@ -15,15 +15,14 @@ if __name__ == '__main__':
         indexing_model_name = 'sentence-transformers/msmarco-distilbert-dot-v5'
         indexing_model = SentenceTransformer(indexing_model_name)
         embedded_corpus = corpus_embedding(corpus, indexing_model)
-        annoy_index = get_annoy_index(256, embedded_corpus, 768, indexing_model_name)
-        ranked_corpus_ids = annoy_indexing(annoy_indexing, query, indexing_model, 10)
+        ranked_corpus_ids = indexing(model, embedded_corpus, query)
 
         qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
         tokenizer = AutoTokenizer.from_pretrained(qa_model_name)
         qa_model = AutoModelForQuestionAnswering.from_pretrained(qa_model_name)
         qa_nlp = pipeline('question-answering', model=qa_model, tokenizer=tokenizer)
 
-        answer = pick_best_answer(query, ranked_corpus_ids, embedded_corpus, qa_nlp)
+        answer = pick_best_answer(query, ranked_corpus_ids[:10], embedded_corpus, qa_nlp)
         print('\n Guessed answer is: {} \n'.format(answer))
 
 
