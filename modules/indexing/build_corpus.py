@@ -12,7 +12,7 @@ from collections import defaultdict
 def build_corpus():
 
     squad_valid = load_dataset("squad_v2", split="validation")
-    squad_set_context = list(set(squad_val['context']))
+    squad_set_context = list(set(squad_valid['context']))
     map_question_context = []
     for context in squad_valid['context']:
       map_question_context.append(squad_set_context.index(context))
@@ -42,5 +42,5 @@ def build_corpus():
         
         corpus = corpus_squad + sample_corpus_db
 
-    # squad_val and map_question_context are used to evaluate the indexing with mrr.
+    # squad_valid and map_question_context are used to evaluate the indexing with mrr.
     return corpus, squad_valid, map_question_context
