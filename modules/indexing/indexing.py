@@ -3,6 +3,7 @@ import torch
 import tqdm as tq
 import numpy as np
 import os
+from annoy import AnnoyIndex
 
 def corpus_embedding(corpus, model):
     # Enables GPU if avalaible for embedding. It is strongly adviced to run this on a GPU
