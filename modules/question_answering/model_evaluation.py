@@ -137,7 +137,7 @@ def _postprocess_qa_predictions(examples, features, raw_predictions, tokenizer, 
                     end_char = offset_mapping[end_index][1]
                     valid_answers.append(
                         {
-                            "score": startP_logits[start_index] + end_logits[end_index],
+                            "score": start_logits[start_index] + end_logits[end_index],
                             "text": context[start_char: end_char]
                         }
                     )
