@@ -31,9 +31,9 @@ def build_corpus():
                 sample_corpus_db.append({'dataset':'dbpedia', 'text':e['text']})
         
         corpus = corpus_squad + sample_corpus_db
-        json = json.dumps(corpus)
+        dumped_json = json.dumps(corpus)
         f = open("corpus.json","w")
-        f.write(json)
+        f.write(dumped_json)
         f.close()
     # squad_val is used to evaluate the indexing with mrr.
     return corpus, squad_val
