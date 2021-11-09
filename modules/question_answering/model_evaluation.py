@@ -169,7 +169,9 @@ def get_processed_predictions(examples, trainer, tokenizer, n_best_size = 20, ma
             Returns:
                    processed_predictions (Dict): Predictions in a string format for each example. Keys are examples ids. Values are the predictions.
     '''
-    validation_features = _prepare_validation_features(examples)
+    max_length = 384
+    doc_stride = 128
+    validation_features = _prepare_validation_features(examples, tokenizer, max_length, doc_stride)
     raw_predictions = trainer.predict(validation_features)
     processed_predictions = _postprocess_qa_predictions(examples, validation_features, raw_predictions, tokenizer,n_best_size, max_answer_length)
     return processed_predictions
