@@ -9,7 +9,7 @@ import os
 from collections import Counter
 from collections import defaultdict
 
-def build_corpus():
+def build_corpus(nb_dbpedia_sample):
 
     squad_valid = load_dataset("squad_v2", split="validation")
     squad_set_context = list(set(squad_valid['context']))
@@ -30,7 +30,7 @@ def build_corpus():
 
         sample_corpus_db = []
         for k,e in corpus_db.items():
-            if len(sample_corpus_db) > 9000:
+            if len(sample_corpus_db) > nb_dbpedia_sample:
                 break
             if len(word_tokenize(e['text'])) > 50:
                 sample_corpus_db.append({'dataset':'dbpedia', 'text':e['text']})
