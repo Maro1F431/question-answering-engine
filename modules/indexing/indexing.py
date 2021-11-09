@@ -1,3 +1,4 @@
+from beir import util
 import torch
 import tqdm as tq
 import numpy as np
@@ -14,22 +15,30 @@ def corpus_embedding(corpus, model):
         elm['text_embedding'] = text_embedded_corpus[i]
     return embedded_corpus
 
-def indexing(model, embedded_corpus, query, comparison_metric):
+def indexing(model, embedded_corpus, query, comparison_metric='dot'):
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     embedded_query = model.encode(query)
     corpus_embeddings = [doc['text_embedding'] for doc in embedded_corpus]
-    similarity_list = list(map(lambda x : comparison_metric(embedded_query, x), corpus_embeddings))
+    if (comparison_metric == 'angular'):
+        similarity_list = list(map(lambda x : util.cos_sim(embedded_query, x), corpus_embeddings))
+    else:
+        similarity_list = list(map(lambda x : util.dot_score(embedded_query, x), corpus_embeddings))        
+        
     ranked_corpus_ids = np.argsort(similarity_list)[::-1]
     return ranked_corpus_ids
 
-def batch_indexing(model, embedded_corpus, queries, torch_comparison_metric):
+def batch_indexing(model, embedded_corpus, queries, comparison_metric='dot'):
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     print('Embedding queries:')
     embedded_queries = model.encode(queries,device=device, show_progress_bar=True)
     corpus_embeddings = [doc['text_embedding'] for doc in embedded_corpus]
     tensor_embedded_query = torch.FloatTensor(embedded_queries).to(device)
     tensor_corpus_embeddings = torch.FloatTensor(corpus_embeddings).to(device)
-    similarity_tensor = torch_comparison_metric(tensor_embedded_query, tensor_corpus_embeddings.t())
+    if (comparison_metric == 'angular'):
+        similarity_tensor = util.cos_sim(tensor_embedded_query, tensor_corpus_embeddings)
+    else:
+        similarity_tensor = util.dot_score(tensor_embedded_query, tensor_corpus_embeddings)
+
     _, tensor_ranked_corpus_ids = torch.sort(similarity_tensor, descending=True, dim=1)
     return tensor_ranked_corpus_ids.tolist()
 
