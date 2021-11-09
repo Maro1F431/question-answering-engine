@@ -122,6 +122,3 @@ def fine_tuning(model_checkpoint, tokenizer, tokenized_datasets, batch_size, res
     trainer.train()
     trainer.save_model("test-squad-trained")
     return trainer
-
-
-

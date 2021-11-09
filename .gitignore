@@ -1,2 +1,3 @@
 # Ignore python virtual env
 .env
+test-squad-trained
