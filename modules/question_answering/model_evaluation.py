@@ -1,4 +1,5 @@
 from tqdm.auto import tqdm
+import functools
 import collections
 import numpy as np
 
@@ -154,12 +155,12 @@ def _postprocess_qa_predictions(examples, features, raw_predictions, tokenizer, 
 
     return predictions
 
-def get_processed_predictions(examples, trainer, tokenizer, n_best_size = 20, max_answer_length = 30):
+def get_processed_predictions(datasets, trainer, tokenizer, n_best_size = 20, max_answer_length = 30):
     '''
     Process the validation dataset for predictions, predict and then postprocess the raw predictions.
 
             Parameters:
-                    examples (Dataset, huggingface): Examples to predict.
+                    datasets (Dataset, huggingface): Dataset containg all splits (train, validation, test).
                     trainer (Trainer, huggingface): Trained qa model.
                     tokenizer (Tokenizer, huggingface): Tokenizer used for the training of the qa model.
                     n_best_size (int): Parameter used for predictions postprocessing. Number of possible answers
@@ -171,9 +172,16 @@ def get_processed_predictions(examples, trainer, tokenizer, n_best_size = 20, ma
     '''
     max_length = 384
     doc_stride = 128
-    validation_features = _prepare_validation_features(examples, tokenizer, max_length, doc_stride)
+
+    functools.partial(_prepare_validation_features, tokenizer=tokenizer, max_length=max_length, doc_stride=doc_stride)
+    validation_features = datasets["validation"].map(
+    functools.partial(_prepare_validation_features, tokenizer=tokenizer, max_length=max_length, doc_stride=doc_stride),
+    batched=True,
+    remove_columns=datasets["validation"].column_names
+    )
+
     raw_predictions = trainer.predict(validation_features)
-    processed_predictions = _postprocess_qa_predictions(examples, validation_features, raw_predictions, tokenizer,n_best_size, max_answer_length)
+    processed_predictions = _postprocess_qa_predictions(datasets['validation'], validation_features, raw_predictions, tokenizer,n_best_size, max_answer_length)
     return processed_predictions
 
 def compute_metrics(processed_predictions, validation_dataset, metrics):

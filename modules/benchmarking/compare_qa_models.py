@@ -6,9 +6,8 @@ def eval_model(model_checkpoint):
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
     model = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint)
     datasets = load_dataset("squad_v2")
-    validation_dataset = datasets['validation']
     trainer = Trainer(model)
-    processed_predictions = get_processed_predictions(validation_dataset, trainer, tokenizer)
+    processed_predictions = get_processed_predictions(datasets, trainer, tokenizer)
     metrics = load_metric("squad_v2")
     computed_metrics = compute_metrics(processed_predictions, validation_dataset, metrics)
     print(computed_metrics)
