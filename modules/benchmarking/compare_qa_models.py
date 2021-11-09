@@ -9,7 +9,7 @@ def eval_model(model_checkpoint):
     trainer = Trainer(model)
     processed_predictions = get_processed_predictions(datasets, trainer, tokenizer)
     metrics = load_metric("squad_v2")
-    computed_metrics = compute_metrics(processed_predictions, validation_dataset, metrics)
+    computed_metrics = compute_metrics(processed_predictions, datasets['validation'], metrics)
     print(computed_metrics)
 
 
