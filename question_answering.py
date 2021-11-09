@@ -15,7 +15,7 @@ if __name__ == '__main__':
         indexing_model_name = 'sentence-transformers/msmarco-distilbert-dot-v5'
         indexing_model = SentenceTransformer(indexing_model_name)
         embedded_corpus = corpus_embedding(corpus, indexing_model)
-        ranked_corpus_ids = indexing(model, embedded_corpus, query)
+        ranked_corpus_ids = indexing(indexing_model, embedded_corpus, query)
 
         qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
         tokenizer = AutoTokenizer.from_pretrained(qa_model_name)
