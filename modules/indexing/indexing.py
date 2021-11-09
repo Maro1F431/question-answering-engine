@@ -17,7 +17,6 @@ def corpus_embedding(corpus, model):
     return embedded_corpus
 
 def indexing(model, embedded_corpus, query, comparison_metric='dot'):
-    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     embedded_query = model.encode(query)
     corpus_embeddings = [doc['text_embedding'] for doc in embedded_corpus]
     if (comparison_metric == 'angular'):
