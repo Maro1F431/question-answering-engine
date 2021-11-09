@@ -19,7 +19,7 @@ def build_corpus():
     corpus_squad = [{'dataset':'squad_v2', 'text': text} for text in squad_set_context]
 
     if os.path.exists('sample_corpus_db.json'):
-        f = open("sample_corpus_b.json",)
+        f = open("sample_corpus_db.json",)
         corpus = json.load(f)
         f.close()
     else:
