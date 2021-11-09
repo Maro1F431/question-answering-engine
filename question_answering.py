@@ -1,6 +1,6 @@
 import argparse
 from modules.indexing.build_corpus import build_corpus
-from modules.indexing.indexing import corpus_embedding, get_annoy_index, indexing, annoy_indexing
+from modules.indexing.indexing import corpus_embedding, get_annoy_index, batch_indexing, annoy_indexing
 from modules.question_answering.best_answer import pick_best_answer
 from sentence_transformers import SentenceTransformer, util
 from transformers import AutoTokenizer, AutoModelForQuestionAnswering, pipeline
@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     while True:
         query = input("Please enter a question: ")
-        ranked_corpus_ids = indexing(indexing_model, embedded_corpus, query)
+        ranked_corpus_ids = batch_indexing(indexing_model, embedded_corpus, [query])[0]
 
         qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
         tokenizer = AutoTokenizer.from_pretrained(qa_model_name)
