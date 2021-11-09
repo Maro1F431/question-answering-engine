@@ -10,6 +10,19 @@ from collections import Counter
 from collections import defaultdict
 
 def build_corpus(nb_dbpedia_sample):
+    '''
+    Build the corpus that serves as a knowledge base for our QA system.
+
+            Parameters:
+                    nb_dbpedia_sample (int): Number of samples to take from the dbpedia dataset.
+
+            Returns:
+                    corpus (list[dict]): The built corpus.
+                    squad_valid (Dataset (from huggingface)): Validation split of the squad_v2 dataset. Used to compute MRR.
+                    map_question_context (list[int]): List where each index corresponds to the question 
+                    at the same index in the validation squad set. The value at the index gives the
+                    index of the context corresponding to the question in our corpus.
+    '''
 
     squad_valid = load_dataset("squad_v2", split="validation")
     squad_set_context = list(set(squad_valid['context']))

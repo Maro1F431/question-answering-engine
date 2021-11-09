@@ -4,12 +4,25 @@ from transformers import AutoTokenizer
 from transformers import AutoModelForQuestionAnswering, TrainingArguments, Trainer
 from transformers import default_data_collator
 
-def _prepare_train_feature(examples, max_length, doc_stride, tokenizer):
-    pad_on_right = tokenizer.padding_side == "right"
-    # Some of the questions have lots of whitespace on the left, which is not useful and will make the
+def _prepare_train_feature(examples, tokenizer, max_length, doc_stride):
+    '''
+    Tokenize and prepare our training dataset for model training.
+
+            Parameters:
+                    examples (Dataset, huggingface): Batch of examples to process.
+                    tokenizer (Tokenizer, huggingface): Tokenizer used for our model.
+                    max_length (int): max length possible for a feature.
+                    doc_stride (int): Possible overlap between the features.
+
+            Returns:
+                   tokenized_examples (Dataset, huggingface): Tokenized and prepared examples.
+    ''' 
+    #Some of the questions have lots of whitespace on the left, which is not useful and will make the
     # truncation of the context fail (the tokenized question will take a lots of space). So we remove that
     # left whitespace
     examples["question"] = [q.lstrip() for q in examples["question"]]
+
+    pad_on_right = tokenizer.padding_side == "right"
 
     # Tokenize our examples with truncation and padding, but keep the overflows using a stride. This results
     # in one example possible giving several features when a context is long, each of those features having a
@@ -83,9 +96,19 @@ def _prepare_train_feature(examples, max_length, doc_stride, tokenizer):
     return tokenized_examples
 
 def preprocessing(model_checkpoint, datasets, max_length, doc_stride):
-    """
-    TODO: Documentation
-    """
+    '''
+    Tokenize and prepare our dataset for model training.
+
+            Parameters:
+                    model_checkpoint (obj, hugginface): Checkpoint of the model to be trained.
+                    datasets (Dataset, huggingface): Huggingface dataset containing all the splits (train, validation and test).
+                    max_length (int): max length possible for a feature.
+                    doc_stride (int): Possible overlap between the features.
+
+            Returns:
+                    tokenizer (Tokenizer, huggingface): The used tokenizer.
+                    tokenized_datasets (Dataset, huggingface): Tokenized and prepared dataset.
+    ''' 
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
     assert isinstance(tokenizer, transformers.PreTrainedTokenizerFast)
     prepare_train_feature = functools.partial(_prepare_train_feature, tokenizer=tokenizer, max_length=max_length, doc_stride=doc_stride)
@@ -94,7 +117,17 @@ def preprocessing(model_checkpoint, datasets, max_length, doc_stride):
 
 def fine_tuning(model_checkpoint, tokenizer, tokenized_datasets, batch_size, resume=False):
     """
-    TODO: Documentation
+    Fine tunes the model with the tokenized dataset. The model is saved locally as "test-squad-trained".
+
+            Parameters:
+                    model_checkpoint (obj, hugginface): Checkpoint of the model to be trained.
+                    tokenizer (Tokenizer, huggingface): Tokenizer used for our model.
+                    tokenized_datasets (Dataset, huggingface): Tokenized and prepared dataset.
+                    batch_size (int): Batch size used for the training.
+                    resume (bool): Boolean stating whether or not the training should start from scratch.
+
+            Returns:
+                    trainer (Trainer, huggingface): The trained model.
     """
     model = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint)
 

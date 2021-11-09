@@ -2,11 +2,25 @@ from tqdm.auto import tqdm
 import collections
 import numpy as np
 
-def _prepare_validation_features(examples):
+def _prepare_validation_features(examples, tokenizer, max_length, doc_stride):
+    '''
+    Tokenize and prepare our validation dataset for easier postprocessing of predictions.
+
+            Parameters:
+                    examples (Dataset, huggingface): Batch of examples to process.
+                    tokenizer (Tokenizer, huggingface): Tokenizer used for our model.
+                    max_length (int): max length possible for a feature.
+                    doc_stride (int): Possible overlap between the features.
+
+            Returns:
+                   tokenized_examples (Dataset, huggingface): Tokenized and prepared examples.
+    '''
     # Some of the questions have lots of whitespace on the left, which is not useful and will make the
     # truncation of the context fail (the tokenized question will take a lots of space). So we remove that
     # left whitespace
     examples["question"] = [q.lstrip() for q in examples["question"]]
+
+    pad_on_right = tokenizer.padding_side == "right"
 
     # Tokenize our examples with truncation and maybe padding, but keep the overflows using a stride. This results
     # in one example possible giving several features when a context is long, each of those features having a
@@ -48,6 +62,21 @@ def _prepare_validation_features(examples):
     return tokenized_examples
 
 def _postprocess_qa_predictions(examples, features, raw_predictions, tokenizer, n_best_size = 20, max_answer_length = 30):
+    '''
+    Postprocess raw predictions of our qa model to give the answers in a string format.
+
+            Parameters:
+                    examples (Dataset, huggingface): Batch of examples used to creates the features.
+                    features (Dataset, huggingface): features created from the examples. An examples can
+                    have multiplie features linked to it. The link between features and examples is made
+                    easily thanks to the preprocessing made by the _prepare_validation_features function.
+                    raw_predictions (list[list[list[float]]]): The raw predictions of our qa models for each feature.
+                    The list is composed of two list of list. One for the 'start' logits and the other for the 'end' logits.
+                    In each of this list, we have the logits for each features.
+
+            Returns:
+                   predictions (Dict): Predictions in a string format for each example. Keys are examples ids. Values are the predictions.
+    '''
     all_start_logits, all_end_logits = raw_predictions
     # Build a map example to its corresponding features.
     example_id_to_index = {k: i for i, k in enumerate(examples["id"])}
@@ -126,12 +155,38 @@ def _postprocess_qa_predictions(examples, features, raw_predictions, tokenizer, 
     return predictions
 
 def get_processed_predictions(examples, trainer, tokenizer, n_best_size = 20, max_answer_length = 30):
+    '''
+    Process the validation dataset for predictions, predict and then postprocess the raw predictions.
+
+            Parameters:
+                    examples (Dataset, huggingface): Examples to predict.
+                    trainer (Trainer, huggingface): Trained qa model.
+                    tokenizer (Tokenizer, huggingface): Tokenizer used for the training of the qa model.
+                    n_best_size (int): Parameter used for predictions postprocessing. Number of possible answers
+                    to consider from the predicted logits.
+                    max_answer_length (int):  Max length authorized for the considered answers.  
+
+            Returns:
+                   processed_predictions (Dict): Predictions in a string format for each example. Keys are examples ids. Values are the predictions.
+    '''
     validation_features = _prepare_validation_features(examples)
     raw_predictions = trainer.predict(validation_features)
     processed_predictions = _postprocess_qa_predictions(examples, validation_features, raw_predictions, tokenizer,n_best_size, max_answer_length)
     return processed_predictions
 
-def compute_metrics(processed_predictions, datasets, metric):
+def compute_metrics(processed_predictions, validation_dataset, metrics):
+    '''
+     Computes the given metrics with the predictions of the given dataset.
+
+            Parameters:
+                    processed_predictions (Dict): Predictions in a string format for each example. Keys are examples ids. Values are the predictions.
+                    validation_dataset (Dataset, huggingface): The validation dataset.
+                    metrics (Metric, huggingface): Huggingface metrics to compute.
+
+            Returns:
+                   computed_metrics (Dict): The computed metrics.
+    '''
     formatted_predictions = [{"id": k, "prediction_text": v, "no_answer_probability": 0.0} for k, v in processed_predictions.items()]
-    references = [{"id": ex["id"], "answers": ex["answers"]} for ex in datasets["validation"]]
-    return metric.compute(predictions=formatted_predictions, references=references)
+    references = [{"id": ex["id"], "answers": ex["answers"]} for ex in validation_dataset]
+    computed_metrics = metrics.compute(predictions=formatted_predictions, references=references)
+    return computed_metrics
