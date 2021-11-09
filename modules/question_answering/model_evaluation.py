@@ -181,8 +181,8 @@ def get_processed_predictions(datasets, trainer, tokenizer, n_best_size = 20, ma
     )
 
     raw_predictions = trainer.predict(validation_features)
-    print(raw_predictions[0])
-    processed_predictions = _postprocess_qa_predictions(datasets['validation'], validation_features, raw_predictions, tokenizer,n_best_size, max_answer_length)
+    validation_features.set_format(type=validation_features.format["type"], columns=list(validation_features.features.keys()))
+    processed_predictions = _postprocess_qa_predictions(datasets['validation'], validation_features, raw_predictions.predictions, tokenizer,n_best_size, max_answer_length)
     return processed_predictions
 
 def compute_metrics(processed_predictions, validation_dataset, metrics):
