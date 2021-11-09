@@ -11,6 +11,6 @@ def eval_model(model_checkpoint):
     processed_predictions = get_processed_predictions(validation_dataset, trainer, tokenizer)
     metrics = load_metric("squad_v2")
     computed_metrics = compute_metrics(processed_predictions, validation_dataset, metrics)
-    print(compute_metrics)
+    print(computed_metrics)
 
 
