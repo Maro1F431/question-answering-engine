@@ -1,4 +1,3 @@
-import transformers
 from datasets import load_dataset
 from beir import util
 from beir.datasets.data_loader import GenericDataLoader
@@ -7,17 +6,23 @@ nltk.download('punkt')
 from nltk import word_tokenize
 import json
 import os
+from collections import Counter
+from collections import defaultdict
 
 def build_corpus():
 
-    squad_val = load_dataset("squad_v2", split="validation")
-    if os.path.exists('corpus.json'):
-        f = open("corpus.json",)
+    squad_valid = load_dataset("squad_v2", split="validation")
+    squad_set_context = list(set(squad_val['context']))
+    map_question_context = []
+    for context in squad_valid['context']:
+      map_question_context.append(squad_set_context.index(context))
+    corpus_squad = [{'dataset':'squad_v2', 'text': text} for text in squad_set_context]
+
+    if os.path.exists('sample_corpus_db.json'):
+        f = open("sample_corpus_b.json",)
         corpus = json.load(f)
         f.close()
     else:
-        corpus_squad = [{'dataset':'squad_v2', 'text': text} for text in list(set(squad_val["context"]))]
-
         dataset = "dbpedia-entity"
         url = "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/{}.zip".format(dataset)
         data_path = util.download_and_unzip(url, "datasets")
@@ -29,16 +34,13 @@ def build_corpus():
                 break
             if len(word_tokenize(e['text'])) > 50:
                 sample_corpus_db.append({'dataset':'dbpedia', 'text':e['text']})
+        json_dumped = json.dumps(sample_corpus_db)
+        f = open("sample_corpus_db.json","w")
+        f.write(json_dumped)
+        f.close()
+        
         
         corpus = corpus_squad + sample_corpus_db
-        dumped_json = json.dumps(corpus)
-        f = open("corpus.json","w")
-        f.write(dumped_json)
-        f.close()
-    # squad_val is used to evaluate the indexing with mrr.
-    return corpus, squad_val
 
-
-
-
-
+    # squad_val and map_question_context are used to evaluate the indexing with mrr.
+    return corpus, squad_valid, map_question_context
