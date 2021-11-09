@@ -15,6 +15,7 @@ if __name__ == '__main__':
     embedded_corpus = corpus_embedding(corpus, indexing_model)
 
     while True:
+        query = input("Please enter a question: ")
         ranked_corpus_ids = indexing(indexing_model, embedded_corpus, query)
 
         qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
