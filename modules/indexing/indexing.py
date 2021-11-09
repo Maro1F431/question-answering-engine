@@ -18,7 +18,7 @@ def indexing(model, embedded_corpus, query, torch_comparison_metric):
     embedded_query = model.encode(query)
     corpus_embeddings = [doc['text_embedding'] for doc in embedded_corpus]
     tensor_embedded_query = torch.FloatTensor(embedded_query)
-    tensor_corpus_embeddings = torch.FloatTensor(corpus_embedding)
+    tensor_corpus_embeddings = torch.FloatTensor(corpus_embeddings)
     similarity_tensor = torch_comparison_metric(tensor_embedded_query, tensor_corpus_embeddings)
     similarity_list = similarity_tensor.tolist()
     ranked_corpus_ids = np.argsort(similarity_list)[::-1]
