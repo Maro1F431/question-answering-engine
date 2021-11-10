@@ -6,11 +6,20 @@ from sentence_transformers import SentenceTransformer, util
 from transformers import AutoTokenizer, AutoModelForQuestionAnswering, pipeline
 
 if __name__ == '__main__':
+    
     parser = argparse.ArgumentParser()
+    parser.add_argument("--annoy",action="store_true", help="uses annoy indexing")
+    parser.add_argument("--nb-dbpedia",type=int, help="number of dbpedia")
+    parser.add_argument("--index_model", type=str, help="name of the huggingface indexing model to use")
     args = parser.parse_args()
-    annoy = True
-    corpus, squad_valid, _ = build_corpus(9000)
+    annoy = args.annoy
+    nb_dbpedia = 9000
+    if args.nb_dbpedia:
+        nb_dbpedia = args.nb_dbpedia
     indexing_model_name = 'sentence-transformers/msmarco-distilbert-dot-v5'
+    if args.index_model:
+        indexing_model_name = args.index_model
+    corpus, squad_valid, _ = build_corpus(nb_dbpedia)
     indexing_model = SentenceTransformer(indexing_model_name)
     embedded_corpus = corpus_embedding(corpus, indexing_model)
 
