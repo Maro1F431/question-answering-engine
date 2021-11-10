@@ -118,6 +118,29 @@ def annoy_indexing(annoy_index, query, indexing_model, top_k_hits):
     query_embedding = indexing_model.encode(query)
     ranked_corpus_ids, _ = annoy_index.get_nns_by_vector(query_embedding, top_k_hits, include_distances=True)
     return ranked_corpus_ids
+
+def batch_annoy_indexing(annoy_index, queries, indexing_model, top_k_hits):
+    '''
+    Uses the annoy index to index the top k documents on a given query.
+
+            Parameters:
+                    annoy_index (obj): annoy index built by get_annoy_index.
+                    queries (list[string]): queries used to index the corpus.
+                    indexing_model (obj): Model used to embed the corpus and the queries.
+                    top_k_hits (int): Number of documents to retrieve.
+
+            Returns:
+                   ranked_corpus_ids (list[int]): A an indexing of our corpus, where documents are 
+                   referenced by their index in the corpus. Documents are ranked in descending order.
+    '''
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    print('Embedding queries:')
+    embedded_queries = indexing_model.encode(queries,device=device, show_progress_bar=True)
+    list_ranked_corpus_ids = []
+    for query in embedded_queries:
+            ranked_corpus_ids, _ = annoy_index.get_nns_by_vector(query, top_k_hits, include_distances=True)
+            list_ranked_corpus_ids.append(ranked_corpus_ids)
+    return ranked_corpus_ids
     
 
     
