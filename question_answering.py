@@ -37,7 +37,7 @@ if __name__ == '__main__':
         query = input("Please enter a question: ")
         if annoy:
             annoy_index = get_annoy_index(256, embedded_corpus, 768, indexing_model_name)
-            ranked_corpus_ids = annoy_indexing(annoy_index, query, indexing_model, topk)
+            ranked_corpus_ids = annoy_indexing(annoy_index, query, indexing_model, top_k)
         else:
             ranked_corpus_ids = batch_indexing(indexing_model, embedded_corpus, [query])[0]
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         qa_model = AutoModelForQuestionAnswering.from_pretrained(qa_model_name)
         qa_nlp = pipeline('question-answering', model=qa_model, tokenizer=tokenizer)
 
-        answer = pick_best_answer(query, ranked_corpus_ids[:topk], embedded_corpus, qa_nlp)
+        answer = pick_best_answer(query, ranked_corpus_ids[:top_k], embedded_corpus, qa_nlp)
         print('\n Guessed answer is: {} \n'.format(answer))
 
 
