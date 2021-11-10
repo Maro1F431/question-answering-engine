@@ -31,8 +31,8 @@ def build_corpus(nb_dbpedia_sample):
       map_question_context.append(squad_set_context.index(context))
     corpus_squad = [{'dataset':'squad_v2', 'text': text} for text in squad_set_context]
 
-    if os.path.exists('sample_corpus_db.json'):
-        f = open("sample_corpus_db.json",)
+    if os.path.exists('{}-sample_corpus_db.json'.format(nb_dbpedia_sample)):
+        f = open('{}-sample_corpus_db.json'.format(nb_dbpedia_sample),)
         corpus = json.load(f)
         f.close()
     else:
@@ -48,7 +48,7 @@ def build_corpus(nb_dbpedia_sample):
             if len(word_tokenize(e['text'])) > 50:
                 sample_corpus_db.append({'dataset':'dbpedia', 'text':e['text']})
         json_dumped = json.dumps(sample_corpus_db)
-        f = open("sample_corpus_db.json","w")
+        f = open("{}-sample_corpus_db.json".format(nb_dbpedia_sample),"w")
         f.write(json_dumped)
         f.close()
         
