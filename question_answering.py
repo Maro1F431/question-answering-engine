@@ -10,6 +10,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--annoy",action="store_true", help="uses annoy indexing")
     parser.add_argument("--nb-dbpedia",type=int, help="number of dbpedia")
+    parser.add_argument("--topk",type=int, help="number of answers to consider")
     parser.add_argument("--indexmodel", type=str, help="name of the huggingface indexing model to use")
     parser.add_argument("--qamodel", type=str, help="name of the huggingface qa model to use")
     args = parser.parse_args()
@@ -23,6 +24,10 @@ if __name__ == '__main__':
     qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
     if args.qamodel:
         qa_model_name = args.qamodel
+    top_k = 10
+    if args.topk:
+        top_k = args.topk
+
     corpus, squad_valid, _ = build_corpus(nb_dbpedia)
     indexing_model = SentenceTransformer(indexing_model_name)
     embedded_corpus = corpus_embedding(corpus, indexing_model)
@@ -32,7 +37,7 @@ if __name__ == '__main__':
         query = input("Please enter a question: ")
         if annoy:
             annoy_index = get_annoy_index(256, embedded_corpus, 768, indexing_model_name)
-            ranked_corpus_ids = annoy_indexing(annoy_index, query, indexing_model, 10)
+            ranked_corpus_ids = annoy_indexing(annoy_index, query, indexing_model, topk)
         else:
             ranked_corpus_ids = batch_indexing(indexing_model, embedded_corpus, [query])[0]
 
@@ -40,7 +45,7 @@ if __name__ == '__main__':
         qa_model = AutoModelForQuestionAnswering.from_pretrained(qa_model_name)
         qa_nlp = pipeline('question-answering', model=qa_model, tokenizer=tokenizer)
 
-        answer = pick_best_answer(query, ranked_corpus_ids[:10], embedded_corpus, qa_nlp)
+        answer = pick_best_answer(query, ranked_corpus_ids[:topk], embedded_corpus, qa_nlp)
         print('\n Guessed answer is: {} \n'.format(answer))
 
 
