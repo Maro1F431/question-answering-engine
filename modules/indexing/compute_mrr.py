@@ -32,7 +32,7 @@ def compute_mrr_squad(embedded_corpus, map_question_context, indexing_model, squ
 
 def compute_mrr_squad_annoy(embedded_corpus, map_question_context, indexing_model, indexing_model_name, top_k, squad_validation_dataset, comparison_metric='dot'):
     '''
-    computes the MRR of our model with all the queries in the squad_v2 validation set.
+    computes the MRR of our model using annoy indexing with all the queries in the squad_v2 validation set.
 
             Parameters:
                     embedded_corpus (list[dict]): Our corpus with the embedding of each entry.
