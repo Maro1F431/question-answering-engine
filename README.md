@@ -1,4 +1,4 @@
-# question-answering-engine
+# IR/QA system
 
 Install the requirements (adviced to use a virutal env) and use the question_answering.py script to test the system:
 ```
