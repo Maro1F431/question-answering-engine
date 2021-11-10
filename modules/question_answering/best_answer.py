@@ -14,9 +14,10 @@ def pick_best_answer(question, ranked_corpus_ids, embedded_corpus, qa_nlp):
     '''
     max_score = 0
     answer = ''
-    print('len corpus ids :')
-    print(len(ranked_corpus_ids))
     for id in ranked_corpus_ids:
+        print("id is : ")
+        print(id)
+        print('embedded_corpus size is {}'.format(len(embedded_corpus)))
         context = embedded_corpus[id]['text']
         QA_input = {
             'question': question,
