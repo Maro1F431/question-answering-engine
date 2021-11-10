@@ -10,15 +10,19 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--annoy",action="store_true", help="uses annoy indexing")
     parser.add_argument("--nb-dbpedia",type=int, help="number of dbpedia")
-    parser.add_argument("--index_model", type=str, help="name of the huggingface indexing model to use")
+    parser.add_argument("--indexmodel", type=str, help="name of the huggingface indexing model to use")
+    parser.add_argument("--qamodel", type=str, help="name of the huggingface qa model to use")
     args = parser.parse_args()
     annoy = args.annoy
     nb_dbpedia = 9000
     if args.nb_dbpedia:
         nb_dbpedia = args.nb_dbpedia
     indexing_model_name = 'sentence-transformers/msmarco-distilbert-dot-v5'
-    if args.index_model:
-        indexing_model_name = args.index_model
+    if args.indexmodel:
+        indexing_model_name = args.indexmodel
+    qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
+    if args.qamodel:
+        qa_model_name = args.qamodel
     corpus, squad_valid, _ = build_corpus(nb_dbpedia)
     indexing_model = SentenceTransformer(indexing_model_name)
     embedded_corpus = corpus_embedding(corpus, indexing_model)
@@ -32,7 +36,6 @@ if __name__ == '__main__':
         else:
             ranked_corpus_ids = batch_indexing(indexing_model, embedded_corpus, [query])[0]
 
-        qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
         tokenizer = AutoTokenizer.from_pretrained(qa_model_name)
         qa_model = AutoModelForQuestionAnswering.from_pretrained(qa_model_name)
         qa_nlp = pipeline('question-answering', model=qa_model, tokenizer=tokenizer)
