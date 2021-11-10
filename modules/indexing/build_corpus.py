@@ -53,7 +53,7 @@ def build_corpus(nb_dbpedia_sample):
         f.close()
         
         
-        corpus = corpus_squad + sample_corpus_db
+    corpus = corpus_squad + sample_corpus_db
 
     # squad_valid and map_question_context are used to evaluate the indexing with mrr.
     return corpus, squad_valid, map_question_context
