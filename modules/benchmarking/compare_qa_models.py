@@ -2,9 +2,9 @@ from datasets import load_dataset, load_metric
 from transformers import AutoTokenizer, Trainer, AutoModelForQuestionAnswering
 from question_answering.model_evaluation import get_processed_predictions, compute_metrics
 
-def eval_model(model_checkpoint):
-    tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-    model = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint)
+def eval_model(model_checkpoint, local=False):
+    tokenizer = AutoTokenizer.from_pretrained(model_checkpoint, local_files_only=local)
+    model = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint, local_files_only=local)
     datasets = load_dataset("squad_v2")
     trainer = Trainer(model)
     processed_predictions = get_processed_predictions(datasets, trainer, tokenizer)
