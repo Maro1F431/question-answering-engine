@@ -33,7 +33,7 @@ def build_corpus(nb_dbpedia_sample):
 
     if os.path.exists('{}-sample_corpus_db.json'.format(nb_dbpedia_sample)):
         f = open('{}-sample_corpus_db.json'.format(nb_dbpedia_sample),)
-        corpus = json.load(f)
+        sample_corpus_db = json.load(f)
         f.close()
     else:
         dataset = "dbpedia-entity"
