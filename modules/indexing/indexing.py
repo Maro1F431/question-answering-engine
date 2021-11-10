@@ -29,7 +29,7 @@ def corpus_embedding(corpus, indexing_model):
         text_embedded_corpus = indexing_model.encode(text_only_corpus,device=device, show_progress_bar=True)
         embedded_corpus = corpus
         for i,elm in enumerate(embedded_corpus):
-            elm['text_embedding'] = text_embedded_corpus[i]
+            elm['text_embedding'] = text_embedded_corpus[i].tolist()
         json_dumped = json.dumps(embedded_corpus)
         f = open('{}-embedded_corpus.json'.format(len(corpus)),"w")
         f.write(json_dumped)
