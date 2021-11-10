@@ -8,6 +8,7 @@ from transformers import AutoTokenizer, AutoModelForQuestionAnswering, pipeline
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
+    annoy = True
     query = input("Please enter a question: ")
     corpus, squad_valid, _ = build_corpus()
     indexing_model_name = 'sentence-transformers/msmarco-distilbert-dot-v5'
@@ -15,8 +16,13 @@ if __name__ == '__main__':
     embedded_corpus = corpus_embedding(corpus, indexing_model)
 
     while True:
+
         query = input("Please enter a question: ")
-        ranked_corpus_ids = batch_indexing(indexing_model, embedded_corpus, [query])[0]
+        if annoy:
+            annoy_index = get_annoy_index(256, embedded_corpus, 768, indexing_model_name)
+            ranked_corpus_ids = annoy_indexing(annoy_index, query, indexing_model, 10)
+        else:
+            ranked_corpus_ids = batch_indexing(indexing_model, embedded_corpus, [query])[0]
 
         qa_model_name = 'mvonwyl/distilbert-base-uncased-finetuned-squad2'
         tokenizer = AutoTokenizer.from_pretrained(qa_model_name)
