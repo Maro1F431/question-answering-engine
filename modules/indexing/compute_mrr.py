@@ -39,6 +39,8 @@ def compute_mrr_squad_annoy(embedded_corpus, map_question_context, indexing_mode
                     map_question_context (list[int]): Built by the build_corpus function. 
                     Needed to retrive easily the relevant context of a given query.
                     indexing_model (obj): Model used to embed the corpus and the queries.
+                    indexing_model_name (str): Name of the indexing model.
+                    top_k (int): Top k results to retrieve fron annoy indexing.
                     squad_validation_dataset (Dataset (huggingface)): squad_v2 validation set.
 
 
