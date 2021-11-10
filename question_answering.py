@@ -9,7 +9,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
     annoy = True
-    query = input("Please enter a question: ")
     corpus, squad_valid, _ = build_corpus(9000)
     indexing_model_name = 'sentence-transformers/msmarco-distilbert-dot-v5'
     indexing_model = SentenceTransformer(indexing_model_name)
