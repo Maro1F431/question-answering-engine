@@ -4,6 +4,7 @@ import tqdm as tq
 import numpy as np
 import os
 from annoy import AnnoyIndex
+import json
 
 def corpus_embedding(corpus, indexing_model):
     '''
@@ -18,12 +19,21 @@ def corpus_embedding(corpus, indexing_model):
     '''
     # Enables GPU if avalaible for embedding. It is strongly adviced to run this on a GPU
     # since the computation on a CPU can take up to an hour on a 10k dataset.
-    device = 'cuda:0' if torch.cuda.is_available() else None
-    text_only_corpus = [elm['text'] for elm in corpus]
-    text_embedded_corpus = indexing_model.encode(text_only_corpus,device=device, show_progress_bar=True)
-    embedded_corpus = corpus
-    for i,elm in enumerate(embedded_corpus):
-        elm['text_embedding'] = text_embedded_corpus[i]
+    if os.path.exists('{}-embedded_corpus.json'.format(len(corpus))):
+        f = open('{}-embedded_corpus.json'.format(len(corpus)),)
+        embedded_corpus = json.load(f)
+        f.close()
+    else:
+        device = 'cuda:0' if torch.cuda.is_available() else None
+        text_only_corpus = [elm['text'] for elm in corpus]
+        text_embedded_corpus = indexing_model.encode(text_only_corpus,device=device, show_progress_bar=True)
+        embedded_corpus = corpus
+        for i,elm in enumerate(embedded_corpus):
+            elm['text_embedding'] = text_embedded_corpus[i]
+        json_dumped = json.dumps(embedded_corpus)
+        f = open('{}-embedded_corpus.json'.format(len(corpus)),"w")
+        f.write(json_dumped)
+        f.close()
     return embedded_corpus
 
 
