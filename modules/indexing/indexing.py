@@ -140,7 +140,7 @@ def batch_annoy_indexing(annoy_index, queries, indexing_model, top_k_hits):
     for query in embedded_queries:
             ranked_corpus_ids, _ = annoy_index.get_nns_by_vector(query, top_k_hits, include_distances=True)
             list_ranked_corpus_ids.append(ranked_corpus_ids)
-    return ranked_corpus_ids
+    return list_ranked_corpus_ids
     
 
     
