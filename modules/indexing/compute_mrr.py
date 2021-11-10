@@ -1,3 +1,8 @@
+import os, sys
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+
 from indexing import batch_indexing, get_annoy_index, batch_annoy_indexing
 
 def compute_mrr_squad(embedded_corpus, map_question_context, indexing_model, squad_validation_dataset, comparison_metric='dot'):

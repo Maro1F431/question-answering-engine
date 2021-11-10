@@ -1,3 +1,8 @@
+import os, sys
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+
 from datasets import load_dataset, load_metric
 from transformers import AutoTokenizer, Trainer, AutoModelForQuestionAnswering
 from question_answering.model_evaluation import get_processed_predictions, compute_metrics
