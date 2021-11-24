@@ -6,8 +6,8 @@ import datasets
 
 from indexing.indexing import batch_indexing, get_annoy_index, batch_annoy_indexing
 
-def compute_mrr_squad(embedded_corpus: list[int], 
-                      map_question_context : list[int], 
+def compute_mrr_squad(embedded_corpus: list, 
+                      map_question_context : list, 
                       indexing_model: object, 
                       squad_validation_dataset : datasets.arrow_dataset.Dataset,
                       comparison_metric : str ='dot') -> float:
@@ -35,8 +35,8 @@ def compute_mrr_squad(embedded_corpus: list[int],
     mrr = sum_reci_rank/len(queries)
     return mrr
 
-def compute_mrr_squad_annoy(embedded_corpus: list[dict], 
-                            map_question_context : list[int], 
+def compute_mrr_squad_annoy(embedded_corpus: list, 
+                            map_question_context : list, 
                             indexing_model: object, 
                             indexing_model_name: str, 
                             top_k: int, 

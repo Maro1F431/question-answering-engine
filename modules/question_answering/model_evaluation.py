@@ -68,7 +68,7 @@ def _prepare_validation_features(examples : datasets.arrow_dataset.Dataset,
 
 def _postprocess_qa_predictions(examples : datasets.arrow_dataset.Dataset, 
                                 features : datasets.arrow_dataset.Dataset, 
-                                raw_predictions : list[list[list[float]]], 
+                                raw_predictions : list, 
                                 tokenizer : object, 
                                 n_best_size : int = 20, 
                                 max_answer_length : int = 30) -> dict:

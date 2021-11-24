@@ -7,7 +7,7 @@ from indexing.indexing import corpus_embedding
 from sentence_transformers import SentenceTransformer, util
 
 
-def plot_mrr_dot(list_of_models : list[str]) -> None:
+def plot_mrr_dot(list_of_models : list) -> None:
   time_taken = []
   res_mrrs = []
 
@@ -26,7 +26,7 @@ def plot_mrr_dot(list_of_models : list[str]) -> None:
 
 
 
-def plot_mrr_cos(list_of_models : list[str]):
+def plot_mrr_cos(list_of_models : list):
   time_taken = []
   res_mrrs = []
 
@@ -42,7 +42,7 @@ def plot_mrr_cos(list_of_models : list[str]):
   ax1.hist(time_taken)
   ax2.hist(res_mrrs)
 
-  def plot_mrr_annoy_dot(list_of_models : list[str], top_k : int) -> None:
+  def plot_mrr_annoy_dot(list_of_models : list, top_k : int) -> None:
     time_taken = []
     res_mrrs = []
 
@@ -58,7 +58,7 @@ def plot_mrr_cos(list_of_models : list[str]):
     ax1.hist(time_taken)
     ax2.hist(res_mrrs)
 
-  def plot_mrr_annoy_cos(list_of_models : list[str], top_k : int):
+  def plot_mrr_annoy_cos(list_of_models : list, top_k : int):
     time_taken = []
     res_mrrs = []
 

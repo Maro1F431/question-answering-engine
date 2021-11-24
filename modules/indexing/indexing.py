@@ -6,7 +6,7 @@ import os
 from annoy import AnnoyIndex
 import json
 
-def corpus_embedding(corpus : list[dict], indexing_model: object) -> list[dict]:
+def corpus_embedding(corpus : list, indexing_model: object) -> list:
     '''
     Embed the corpus with the indexing model.
 
@@ -38,9 +38,9 @@ def corpus_embedding(corpus : list[dict], indexing_model: object) -> list[dict]:
 
 
 def batch_indexing(indexing_model : object, 
-                   embedded_corpus : list[dict],
-                   queries : list[str], 
-                   comparison_metric : str ='dot') -> list[list[int]]:
+                   embedded_corpus : list,
+                   queries : list, 
+                   comparison_metric : str ='dot') -> list:
     '''
     Indexes our corpus for multiple given queries.
 
@@ -72,7 +72,7 @@ def batch_indexing(indexing_model : object,
     return list_ranked_corpus_ids
 
 def get_annoy_index(n_trees : int,
-                    embedded_corpus : list[dict], 
+                    embedded_corpus : list, 
                     embedding_size : int, 
                     indexing_model_name : str, 
                     comparison_metric : str ='dot') -> object:
@@ -111,7 +111,7 @@ def get_annoy_index(n_trees : int,
 def annoy_indexing(annoy_index : object, 
                    query : str, 
                    indexing_model : object,
-                   top_k_hits : int) -> list[int]:
+                   top_k_hits : int) -> list:
     '''
     Uses the annoy index to index the top k documents on a given query.
 
@@ -130,9 +130,9 @@ def annoy_indexing(annoy_index : object,
     return ranked_corpus_ids
 
 def batch_annoy_indexing(annoy_index : object, 
-                         queries : list[str], 
+                         queries : list, 
                          indexing_model: object, 
-                         top_k_hits : int) -> list[int]:
+                         top_k_hits : int) -> list:
     '''
     Uses the annoy index to index the top k documents on a given query.
 
