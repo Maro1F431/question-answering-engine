@@ -218,6 +218,16 @@ def compute_metrics(processed_predictions : dict,
     return computed_metrics
 
 def show_badly_classified(processed_predictions : dict, validation_dataset : datasets.arrow_dataset.Dataset):
+    '''
+     Computes the given metrics with the predictions of the given dataset.
+
+            Parameters:
+                    processed_predictions (Dict): Predictions in a string format for each example. Keys are examples ids. Values are the predictions.
+                    validation_dataset (Dataset, huggingface): The validation dataset.
+
+            Returns:
+                   badly_classified_examples (List): A list of the badly classified examples with the context, possible answers and the prediction.
+    '''
     badly_classified_examples = []
     for ex in validation_dataset:
         prediction = processed_predictions[ex["id"]]
