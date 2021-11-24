@@ -102,7 +102,7 @@ def _prepare_train_feature(examples : datasets.arrow_dataset.Dataset,
 def preprocessing(model_checkpoint : object, 
                   datasets : datasets.arrow_dataset.Dataset, 
                   max_length : int, 
-                  doc_stride : int) -> tuple(object, datasets.arrow_dataset.Dataset):
+                  doc_stride : int) -> tuple[object, datasets.arrow_dataset.Dataset]:
     '''
     Tokenize and prepare our dataset for model training.
 
