@@ -216,3 +216,12 @@ def compute_metrics(processed_predictions : dict,
     references = [{"id": ex["id"], "answers": ex["answers"]} for ex in validation_dataset]
     computed_metrics = metrics.compute(predictions=formatted_predictions, references=references)
     return computed_metrics
+
+def show_badly_classified(processed_predictions : dict, validation_dataset : datasets.arrow_dataset.Dataset):
+    badly_classified_examples = []
+    for ex in validation_dataset:
+        prediction = processed_predictions[ex["id"]]
+        if prediction != ex["answers"]:
+            badly_classified_examples.append((ex["context"], ex["answers"], prediction))
+    return badly_classified_examples
+            
