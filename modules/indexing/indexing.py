@@ -6,7 +6,7 @@ import os
 from annoy import AnnoyIndex
 import json
 
-def corpus_embedding(corpus : list, indexing_model: object) -> list:
+def corpus_embedding(corpus : list, indexing_model: object, indexing_model_name : str) -> list:
     '''
     Embed the corpus with the indexing model.
 
@@ -19,7 +19,7 @@ def corpus_embedding(corpus : list, indexing_model: object) -> list:
     '''
     # Enables GPU if avalaible for embedding. It is strongly adviced to run this on a GPU
     # since the computation on a CPU can take up to an hour on a 10k dataset.
-    if os.path.exists('{}-embedded_corpus.json'.format(len(corpus))):
+    if os.path.exists('{}-embedded_corpus-{}.json'.format(len(corpus), indexing_model_name)):
         f = open('{}-embedded_corpus.json'.format(len(corpus)),)
         embedded_corpus = json.load(f)
         f.close()

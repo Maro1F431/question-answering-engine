@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     corpus, squad_valid, _ = build_corpus(nb_dbpedia)
     indexing_model = SentenceTransformer(indexing_model_name)
-    embedded_corpus = corpus_embedding(corpus, indexing_model)
+    embedded_corpus = corpus_embedding(corpus, indexing_model, indexing_model_name)
 
     while True:
 
