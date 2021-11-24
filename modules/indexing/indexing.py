@@ -154,6 +154,41 @@ def batch_annoy_indexing(annoy_index : object,
             ranked_corpus_ids, _ = annoy_index.get_nns_by_vector(query, top_k_hits, include_distances=True)
             list_ranked_corpus_ids.append(ranked_corpus_ids)
     return list_ranked_corpus_ids
+
+def batch_indexing_cpu(indexing_model : object, 
+                   embedded_corpus : list,
+                   queries : list, 
+                   comparison_metric : str ='dot') -> list:
+    '''
+    Indexes our corpus for multiple given queries.
+    We onlu use a CPU here
+
+            Parameters:
+                    indexing_model (obj): Model used to embed the corpus and the queries.
+                    embedded_corpus (list[dict]): Our corpus with the embedding of each entry.
+                    queries (list[string]): queries used to index the corpus.
+                    comparison_metric (str, either 'dot' or 'angular): metric used to compare
+                    the embedded queries and documents.
+
+            Returns:
+                   list_ranked_corpus_ids (list[list[int]]): List containing a list of int for each
+                   input queries. The list of int is an indexing of our corpus, where documents are 
+                   referenced by their index in the corpus. Documents are ranked in descending order.
+    '''
+    device = 'cpu'
+    print('Embedding queries:')
+    embedded_queries = indexing_model.encode(queries,device=device, show_progress_bar=True)
+    corpus_embeddings = [doc['text_embedding'] for doc in embedded_corpus]
+    tensor_embedded_query = torch.FloatTensor(embedded_queries).to(device)
+    tensor_corpus_embeddings = torch.FloatTensor(corpus_embeddings).to(device)
+    if (comparison_metric == 'angular'):
+        similarity_tensor = util.cos_sim(tensor_embedded_query, tensor_corpus_embeddings)
+    else:
+        similarity_tensor = util.dot_score(tensor_embedded_query, tensor_corpus_embeddings)
+
+    _, tensor_ranked_corpus_ids = torch.sort(similarity_tensor, descending=True, dim=1) # torch.sort return sorted, indexes
+    list_ranked_corpus_ids = tensor_ranked_corpus_ids.tolist()
+    return list_ranked_corpus_ids
     
 
     
