@@ -1,4 +1,7 @@
-def pick_best_answer(question, ranked_corpus_ids, embedded_corpus, qa_nlp):
+def pick_best_answer(question : str, 
+                     ranked_corpus_ids : list[int], 
+                     embedded_corpus : list[dict], 
+                     qa_nlp : object) -> str:
     '''
     Picks the best answer to the given question. Uses each document in the 
     given indexed corpus as context, one by one.

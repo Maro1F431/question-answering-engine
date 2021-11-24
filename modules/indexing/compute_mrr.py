@@ -2,10 +2,15 @@ import os, sys
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
+import datasets
 
 from indexing.indexing import batch_indexing, get_annoy_index, batch_annoy_indexing
 
-def compute_mrr_squad(embedded_corpus, map_question_context, indexing_model, squad_validation_dataset, comparison_metric='dot'):
+def compute_mrr_squad(embedded_corpus: list[int], 
+                      map_question_context : list[int], 
+                      indexing_model: object, 
+                      squad_validation_dataset : datasets.arrow_dataset.Dataset,
+                      comparison_metric : str ='dot') -> float:
     '''
     computes the MRR of our model with all the queries in the squad_v2 validation set.
 
@@ -30,7 +35,13 @@ def compute_mrr_squad(embedded_corpus, map_question_context, indexing_model, squ
     mrr = sum_reci_rank/len(queries)
     return mrr
 
-def compute_mrr_squad_annoy(embedded_corpus, map_question_context, indexing_model, indexing_model_name, top_k, squad_validation_dataset, comparison_metric='dot'):
+def compute_mrr_squad_annoy(embedded_corpus: list[dict], 
+                            map_question_context : list[int], 
+                            indexing_model: object, 
+                            indexing_model_name: str, 
+                            top_k: int, 
+                            squad_validation_dataset : datasets.arrow_dataset.Dataset, 
+                            comparison_metric : str ='dot') -> float:
     '''
     computes the MRR of our model using annoy indexing with all the queries in the squad_v2 validation set.
 
@@ -48,7 +59,7 @@ def compute_mrr_squad_annoy(embedded_corpus, map_question_context, indexing_mode
                     mrr (float): mrr score on squad_v2.
     '''
     queries = squad_validation_dataset['question']
-    annoy_index = get_annoy_index(256, embedded_corpus, 768, indexing_model_name)
+    annoy_index = get_annoy_index(256, embedded_corpus, 768, indexing_model_name, comparison_metric)
     list_ranked_documents_indexes = batch_annoy_indexing(annoy_index, queries, indexing_model, top_k)
     sum_reci_rank = 0
     for i in range(len(queries)):

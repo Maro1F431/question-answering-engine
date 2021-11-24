@@ -6,7 +6,7 @@ import os
 from annoy import AnnoyIndex
 import json
 
-def corpus_embedding(corpus, indexing_model):
+def corpus_embedding(corpus : list[dict], indexing_model: object) -> list[dict]:
     '''
     Embed the corpus with the indexing model.
 
@@ -37,7 +37,10 @@ def corpus_embedding(corpus, indexing_model):
     return embedded_corpus
 
 
-def batch_indexing(indexing_model, embedded_corpus, queries, comparison_metric='dot'):
+def batch_indexing(indexing_model : object, 
+                   embedded_corpus : list[dict],
+                   queries : list[str], 
+                   comparison_metric : str ='dot') -> list[list[int]]:
     '''
     Indexes our corpus for multiple given queries.
 
@@ -68,7 +71,11 @@ def batch_indexing(indexing_model, embedded_corpus, queries, comparison_metric='
     list_ranked_corpus_ids = tensor_ranked_corpus_ids.tolist()
     return list_ranked_corpus_ids
 
-def get_annoy_index(n_trees, embedded_corpus, embedding_size, indexing_model_name, comparison_metric='dot'):
+def get_annoy_index(n_trees : int,
+                    embedded_corpus : list[dict], 
+                    embedding_size : int, 
+                    indexing_model_name : str, 
+                    comparison_metric : str ='dot') -> object:
     '''
     Builds the annoy index of our corpus. It is highly recommended to use a GPU for this.
 
@@ -101,7 +108,10 @@ def get_annoy_index(n_trees, embedded_corpus, embedding_size, indexing_model_nam
         annoy_index.load(annoy_index_path)
     return annoy_index
 
-def annoy_indexing(annoy_index, query, indexing_model, top_k_hits):
+def annoy_indexing(annoy_index : object, 
+                   query : str, 
+                   indexing_model : object,
+                   top_k_hits : int) -> list[int]:
     '''
     Uses the annoy index to index the top k documents on a given query.
 
@@ -119,7 +129,10 @@ def annoy_indexing(annoy_index, query, indexing_model, top_k_hits):
     ranked_corpus_ids, _ = annoy_index.get_nns_by_vector(query_embedding, top_k_hits, include_distances=True)
     return ranked_corpus_ids
 
-def batch_annoy_indexing(annoy_index, queries, indexing_model, top_k_hits):
+def batch_annoy_indexing(annoy_index : object, 
+                         queries : list[str], 
+                         indexing_model: object, 
+                         top_k_hits : int) -> list[int]:
     '''
     Uses the annoy index to index the top k documents on a given query.
 

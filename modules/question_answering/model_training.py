@@ -3,8 +3,12 @@ import transformers
 from transformers import AutoTokenizer
 from transformers import AutoModelForQuestionAnswering, TrainingArguments, Trainer
 from transformers import default_data_collator
+import datasets
 
-def _prepare_train_feature(examples, tokenizer, max_length, doc_stride):
+def _prepare_train_feature(examples : datasets.arrow_dataset.Dataset, 
+                           tokenizer : object, 
+                           max_length : int, 
+                           doc_stride : int) -> datasets.arrow_dataset.Dataset:
     '''
     Tokenize and prepare our training dataset for model training.
 
@@ -95,7 +99,10 @@ def _prepare_train_feature(examples, tokenizer, max_length, doc_stride):
 
     return tokenized_examples
 
-def preprocessing(model_checkpoint, datasets, max_length, doc_stride):
+def preprocessing(model_checkpoint : object, 
+                  datasets : datasets.arrow_dataset.Dataset, 
+                  max_length : int, 
+                  doc_stride : int) -> tuple(object, datasets.arrow_dataset.Dataset):
     '''
     Tokenize and prepare our dataset for model training.
 
@@ -115,7 +122,11 @@ def preprocessing(model_checkpoint, datasets, max_length, doc_stride):
     tokenized_datasets = datasets.map(prepare_train_feature, batched=True, remove_columns=datasets["train"].column_names)
     return tokenizer, tokenized_datasets
 
-def fine_tuning(model_checkpoint, tokenizer, tokenized_datasets, batch_size, resume=False):
+def fine_tuning(model_checkpoint : object, 
+                tokenizer : object, 
+                tokenized_datasets : datasets.arrow_dataset.Dataset, 
+                batch_size : int, 
+                resume : bool = False) -> object:
     """
     Fine tunes the model with the tokenized dataset. The model is saved locally as "test-squad-trained".
 

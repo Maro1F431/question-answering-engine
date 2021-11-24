@@ -2,8 +2,12 @@ from tqdm.auto import tqdm
 import functools
 import collections
 import numpy as np
+import datasets
 
-def _prepare_validation_features(examples, tokenizer, max_length, doc_stride):
+def _prepare_validation_features(examples : datasets.arrow_dataset.Dataset, 
+                                 tokenizer : object, 
+                                 max_length : int, 
+                                 doc_stride : int) -> datasets.arrow_dataset.Dataset:
     '''
     Tokenize and prepare our validation dataset for easier postprocessing of predictions.
 
@@ -62,7 +66,12 @@ def _prepare_validation_features(examples, tokenizer, max_length, doc_stride):
 
     return tokenized_examples
 
-def _postprocess_qa_predictions(examples, features, raw_predictions, tokenizer, n_best_size = 20, max_answer_length = 30):
+def _postprocess_qa_predictions(examples : datasets.arrow_dataset.Dataset, 
+                                features : datasets.arrow_dataset.Dataset, 
+                                raw_predictions : list[list[list[float]]], 
+                                tokenizer : object, 
+                                n_best_size : int = 20, 
+                                max_answer_length : int = 30) -> dict:
     '''
     Postprocess raw predictions of our qa model to give the answers in a string format.
 
@@ -155,7 +164,11 @@ def _postprocess_qa_predictions(examples, features, raw_predictions, tokenizer, 
 
     return predictions
 
-def get_processed_predictions(datasets, trainer, tokenizer, n_best_size = 20, max_answer_length = 30):
+def get_processed_predictions(datasets : datasets.arrow_dataset.Dataset, 
+                              trainer : object, 
+                              tokenizer : object, 
+                              n_best_size : int = 20, 
+                              max_answer_length : int = 30) -> dict:
     '''
     Process the validation dataset for predictions, predict and then postprocess the raw predictions.
 
@@ -185,7 +198,9 @@ def get_processed_predictions(datasets, trainer, tokenizer, n_best_size = 20, ma
     processed_predictions = _postprocess_qa_predictions(datasets['validation'], validation_features, raw_predictions.predictions, tokenizer,n_best_size, max_answer_length)
     return processed_predictions
 
-def compute_metrics(processed_predictions, validation_dataset, metrics):
+def compute_metrics(processed_predictions : dict, 
+                    validation_dataset : datasets.arrow_dataset.Dataset,
+                    metrics : object) -> dict:
     '''
      Computes the given metrics with the predictions of the given dataset.
 

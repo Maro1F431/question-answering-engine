@@ -1,3 +1,4 @@
+from typing import Tuple
 from datasets import load_dataset
 from beir import util
 from beir.datasets.data_loader import GenericDataLoader
@@ -8,8 +9,9 @@ import json
 import os
 from collections import Counter
 from collections import defaultdict
+import datasets
 
-def build_corpus(nb_dbpedia_sample):
+def build_corpus(nb_dbpedia_sample: int) -> tuple(list[dict], datasets.arrow_dataset.Dataset, list[int]):
     '''
     Build the corpus that serves as a knowledge base for our QA system.
 
