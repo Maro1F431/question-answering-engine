@@ -67,7 +67,7 @@ def batch_indexing(indexing_model : object,
     else:
         similarity_tensor = util.dot_score(tensor_embedded_query, tensor_corpus_embeddings)
 
-    _, tensor_ranked_corpus_ids = torch.sort(similarity_tensor, descending=True, dim=1)
+    _, tensor_ranked_corpus_ids = torch.sort(similarity_tensor, descending=True, dim=1) # torch.sort return sorted, indexes
     list_ranked_corpus_ids = tensor_ranked_corpus_ids.tolist()
     return list_ranked_corpus_ids
 
