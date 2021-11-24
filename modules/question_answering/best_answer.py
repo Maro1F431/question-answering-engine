@@ -1,6 +1,6 @@
 def pick_best_answer(question : str, 
-                     ranked_corpus_ids : list[int], 
-                     embedded_corpus : list[dict], 
+                     ranked_corpus_ids : list, 
+                     embedded_corpus : list, 
                      qa_nlp : object) -> str:
     '''
     Picks the best answer to the given question. Uses each document in the 
