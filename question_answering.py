@@ -9,8 +9,8 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--annoy",action="store_true", help="uses annoy indexing")
-    parser.add_argument("--nb-dbpedia",type=int, help="number of dbpedia")
-    parser.add_argument("--topk",type=int, help="number of answers to consider")
+    parser.add_argument("--nb-dbpedia",type=int, help="number of dbpedia samples to add")
+    parser.add_argument("--topk",type=int, help="number of context to consider")
     parser.add_argument("--indexmodel", type=str, help="name of the huggingface indexing model to use")
     parser.add_argument("--qamodel", type=str, help="name of the huggingface qa model to use")
     args = parser.parse_args()
