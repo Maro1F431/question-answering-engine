@@ -221,7 +221,7 @@ def show_badly_classified(processed_predictions : dict, validation_dataset : dat
     badly_classified_examples = []
     for ex in validation_dataset:
         prediction = processed_predictions[ex["id"]]
-        if prediction != ex["answers"]:
-            badly_classified_examples.append((ex["context"], ex["answers"], prediction))
+        if prediction not in ex["answers"]["text"]:
+          if not (prediction == '' and ex["answers"]["text"] == []):
+            badly_classified_examples.append((ex["context"], ex["question"], ex["answers"]["text"], prediction))
     return badly_classified_examples
-            
