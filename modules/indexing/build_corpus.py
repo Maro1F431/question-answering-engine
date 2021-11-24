@@ -11,7 +11,7 @@ from collections import Counter
 from collections import defaultdict
 import datasets
 
-def build_corpus(nb_dbpedia_sample: int) -> tuple[list[dict], object, list[int]]:
+def build_corpus(nb_dbpedia_sample: int) -> (list[dict], object, list[int]):
     '''
     Build the corpus that serves as a knowledge base for our QA system.
 
